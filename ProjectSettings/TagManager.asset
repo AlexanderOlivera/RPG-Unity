@@ -8,7 +8,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemies
   - Water
   - UI
   - 
@@ -44,9 +44,6 @@ TagManager:
   - name: fondo
     uniqueID: 2425651459
     locked: 0
-  - name: muros
-    uniqueID: 4250941897
-    locked: 0
   - name: casas
     uniqueID: 4189426099
     locked: 0
@@ -67,6 +64,9 @@ TagManager:
     locked: 0
   - name: objetos
     uniqueID: 2497919611
+    locked: 0
+  - name: muros
+    uniqueID: 4250941897
     locked: 0
   m_RenderingLayers:
   - Default
