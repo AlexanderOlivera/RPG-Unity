@@ -34,3 +34,6 @@ MemoryCaptures/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+.plastic/
+ignore.conf

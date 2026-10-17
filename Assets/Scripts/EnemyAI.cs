@@ -3,78 +3,75 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     public Transform player;
-    public float speed = 2f;
-    public float attackRange = 1f; // Distancia a la que se detiene para atacar
+    public float speed = 2.5f;
+    public float attackRange = 1.1f;
     public int attackDamage = 5;
-    public float attackCooldown = 1.5f; // Segundos entre cada ataque
+    public float attackCooldown = 1.5f;
 
-    private float lastAttackTime;
-    private Rigidbody2D rb;
+    private Animator animator;
     private SpriteRenderer spriteRenderer;
+
+    // Nueva variable secreta para llevar la cuenta regresiva del ataque
+    private float nextAttackTime = 0f;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Busca automáticamente al jugador si no lo asignaste en el Inspector
-        if (player == null)
-        {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null) player = playerObj.transform;
-        }
     }
 
     void Update()
     {
         if (player == null) return;
 
-        // Voltear el sprite para mirar siempre al jugador
-        if (player.position.x < transform.position.x) spriteRenderer.flipX = true;
-        else if (player.position.x > transform.position.x) spriteRenderer.flipX = false;
-
-        // Lógica de ataque
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        if (distanceToPlayer <= attackRange)
+        if (distanceToPlayer > attackRange)
         {
-            if (Time.time >= lastAttackTime + attackCooldown)
+            // 1. Perseguir al jugador
+            transform.position = Vector2.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
+
+            Vector2 direction = (player.position - transform.position).normalized;
+
+            animator.SetFloat("X", direction.x);
+            animator.SetFloat("Y", direction.y);
+            animator.SetFloat("Speed", speed);
+
+            if (direction.x < 0)
+                spriteRenderer.flipX = true;
+            else if (direction.x > 0)
+                spriteRenderer.flipX = false;
+        }
+        else
+        {
+            // 2. El enemigo está lo suficientemente cerca para atacar, así que se detiene
+            animator.SetFloat("Speed", 0);
+
+            // 3. Revisar si ya pasó el tiempo de espera (Cooldown) para poder atacar
+            if (Time.time >= nextAttackTime)
             {
-                AttackPlayer();
-                lastAttackTime = Time.time;
+                AtacarJugador();
+
+                // Reiniciar el cronómetro para el siguiente golpe
+                nextAttackTime = Time.time + attackCooldown;
             }
         }
     }
 
-    void FixedUpdate()
+    void AtacarJugador()
     {
-        if (player == null) return;
+        // (Opcional) Si luego le haces animación de ataque al topo, aquí pondrías: animator.SetTrigger("Attack");
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-        // Moverse solo si el jugador está fuera del rango de ataque
-        if (distanceToPlayer > attackRange)
-        {
-            Vector2 targetPosition = Vector2.MoveTowards(rb.position, player.position, speed * Time.fixedDeltaTime);
-            rb.MovePosition(targetPosition);
-        }
-    }
-
-    void AttackPlayer()
-    {
+        // Buscar el script "Health" que tiene tu jugador
         Health playerHealth = player.GetComponent<Health>();
 
         if (playerHealth != null)
         {
-            Debug.Log("¡El " + gameObject.name + " ataca al jugador por " + attackDamage + " de daño!");
+            // Restar la vida usando tu función TakeDamage
             playerHealth.TakeDamage(attackDamage);
-        }
-    }
 
-    // Dibuja un círculo amarillo en la escena para ver el rango de ataque del enemigo
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+            // Imprimir en la consola para confirmar que funciona
+            Debug.Log("¡El topo atacó y te hizo " + attackDamage + " de daño!");
+        }
     }
 }
