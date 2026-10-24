@@ -3,11 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\josue\\OneDrive\\Desktop\\Repositorios\\Videojuegos\\RPG\\RPG\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|C:\\Users\\josue\\OneDrive\\Desktop\\Repositorios\\Videojuegos\\RPG\\RPG\\assets\\scripts\\enemyai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|c:\\users\\josue\\onedrive\\desktop\\repositorios\\videojuegos\\rpg\\rpg\\assets\\scripts\\enemyai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\enemyai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|c:\\users\\josue\\onedrive\\desktop\\repositorios\\videojuegos\\rpg\\rpg\\assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|C:\\Users\\josue\\OneDrive\\Desktop\\Repositorios\\Videojuegos\\RPG\\RPG\\assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -60,7 +60,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\EnemyAI.cs",
               "ToolTip": "C:\\Users\\josue\\OneDrive\\Desktop\\Repositorios\\Videojuegos\\RPG\\RPG\\Assets\\Scripts\\EnemyAI.cs",
               "RelativeToolTip": "Assets\\Scripts\\EnemyAI.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAgwCoAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAADMAAAAAAAAAAAAwwFkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-06T04:53:13.792Z",
               "EditorCaption": ""
@@ -75,8 +75,7 @@
               "RelativeToolTip": "Assets\\Scripts\\PlayerController.cs",
               "ViewState": "AgIAACAAAAAAAAAAAAAmwCYAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-06T04:43:55.648Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-06T04:43:55.648Z"
             }
           ]
         }

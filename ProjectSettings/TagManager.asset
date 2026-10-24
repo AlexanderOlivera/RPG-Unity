@@ -53,6 +53,12 @@ TagManager:
   - name: caminos 2
     uniqueID: 797685769
     locked: 0
+  - name: muros
+    uniqueID: 4250941897
+    locked: 0
+  - name: objetos
+    uniqueID: 2497919611
+    locked: 0
   - name: player
     uniqueID: 3220583483
     locked: 0
@@ -62,11 +68,8 @@ TagManager:
   - name: npc
     uniqueID: 1626073141
     locked: 0
-  - name: objetos
-    uniqueID: 2497919611
-    locked: 0
-  - name: muros
-    uniqueID: 4250941897
+  - name: Objetos
+    uniqueID: 2850461627
     locked: 0
   m_RenderingLayers:
   - Default
