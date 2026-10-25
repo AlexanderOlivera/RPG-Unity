@@ -4,5 +4,29 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_RPG/Scenes/00_MainMenu.unity
+    guid: 62a21b91baa45dc4b9704ae2d148f238
+  - enabled: 1
+    path: Assets/_RPG/Scenes/01_Bosque.unity
+    guid: 6fe8d12dcb347934a81113eaabf45f73
+  - enabled: 1
+    path: Assets/_RPG/Scenes/02_Aldea.unity
+    guid: 04cc5e8f61a77b44387b8ce555a29d89
+  - enabled: 1
+    path: Assets/_RPG/Scenes/03_Cuevas.unity
+    guid: 6b0f47f7378349e45bca8ad684816f0e
+  - enabled: 1
+    path: Assets/_RPG/Scenes/04_Ruinas.unity
+    guid: 449ebbd7ae511ec41bb091f7dfb26a60
+  - enabled: 1
+    path: Assets/_RPG/Scenes/05_Santuario.unity
+    guid: a10d97ab4d8a0ec4e9164e2c0b798041
+  - enabled: 1
+    path: Assets/_RPG/Scenes/06_Creditos.unity
+    guid: f66d109d8ed80c443b7d22d40b37f93a
+  m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f,
+      type: 2}
+  m_UseUCBPForAssetBundles: 0
