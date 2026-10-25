@@ -7,20 +7,29 @@ public class PlayerController : MonoBehaviour
     public int attackDamage = 10;
     public LayerMask enemyLayers;
 
+    [Header("Disparo con Arco")]
+    public GameObject arrowPrefab;
+    public Transform firePoint;
+    private Vector2 lastMoveDirection = Vector2.down; // Para saber a dónde mirar al estar quieto
+
     private Rigidbody2D rb;
     private Vector2 movement;
     private Animator animator;
-    private SpriteRenderer spriteRenderer; // 1. Agregamos el SpriteRenderer
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // 2. Lo conectamos
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
+        // BLOQUEO DE PAUSA Y GAME OVER: 
+        // Si el tiempo está congelado, ignora todo este código y no permite moverse ni disparar.
+        if (Time.timeScale == 0f) return;
+
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
@@ -30,13 +39,18 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetFloat("X", movement.x);
             animator.SetFloat("Y", movement.y);
+
+            // Guardar la dirección para la flecha
+            if (Mathf.Abs(movement.x) > Mathf.Abs(movement.y))
+                lastMoveDirection = new Vector2(movement.x, 0).normalized;
+            else
+                lastMoveDirection = new Vector2(0, movement.y).normalized;
         }
 
-        // 3. Lógica para voltear el sprite al caminar hacia los lados
         if (movement.x < 0)
-            spriteRenderer.flipX = true; // Ajusta a true o false según hacia dónde mire tu sprite original
+            spriteRenderer.flipX = true;
         else if (movement.x > 0)
-            spriteRenderer.flipX = false;  // Invierte este valor si queda al revés
+            spriteRenderer.flipX = false;
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -53,6 +67,14 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetTrigger("Attack");
 
+        // Instanciar y disparar la flecha
+        if (arrowPrefab != null && firePoint != null)
+        {
+            GameObject arrow = Instantiate(arrowPrefab, firePoint.position, Quaternion.identity);
+            arrow.GetComponent<Arrow>().Setup(lastMoveDirection);
+        }
+
+        /* LÓGICA CUERPO A CUERPO ORIGINAL (Comentada para evitar daño doble)
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayers);
         foreach (Collider2D enemy in hitEnemies)
         {
@@ -63,6 +85,7 @@ public class PlayerController : MonoBehaviour
                 enemyHealth.TakeDamage(attackDamage);
             }
         }
+        */
     }
 
     void OnDrawGizmosSelected()

@@ -6,7 +6,7 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
     public float speed = 2.5f;
     public float attackRange = 1.1f;
-    public int attackDamage = 5;
+    public int attackDamage = 10;
     public float attackCooldown = 1.5f;
 
     // Referencias a los componentes internos
