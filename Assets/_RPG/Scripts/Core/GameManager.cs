@@ -65,8 +65,8 @@ public class GameManager : MonoBehaviour
         if (existingPlayer != null)
         {
             Health existingHealth = existingPlayer.GetComponent<Health>();
-            if (existingHealth != null) existingHealth.OnHealthChanged -= HandlePlayerHealthChanged;
-            if (existingHealth != null) existingHealth.OnDied -= HandlePlayerDied;
+           // if (existingHealth != null) existingHealth.OnHealthChanged -= HandlePlayerHealthChanged;
+          //  if (existingHealth != null) existingHealth.OnDied -= HandlePlayerDied;
         }
 
         GameBootstrap.SetupScene();
@@ -85,10 +85,10 @@ public class GameManager : MonoBehaviour
 
         h.maxHealth = GameSession.PlayerMaxHealth;
         h.SetHealth(GameSession.PlayerHealth > 0 ? GameSession.PlayerHealth : GameSession.PlayerMaxHealth);
-        h.OnHealthChanged -= HandlePlayerHealthChanged;
-        h.OnHealthChanged += HandlePlayerHealthChanged;
-        h.OnDied -= HandlePlayerDied;
-        h.OnDied += HandlePlayerDied;
+  //      h.OnHealthChanged -= HandlePlayerHealthChanged;
+      //  h.OnHealthChanged += HandlePlayerHealthChanged;
+       // h.OnDied -= HandlePlayerDied;
+     //   h.OnDied += HandlePlayerDied;
         NotifyChanged();
     }
 

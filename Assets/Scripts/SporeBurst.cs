@@ -16,12 +16,12 @@ public class SporeBurst : MonoBehaviour
     void Awake()
     {
         health = GetComponent<Health>();
-        if (health != null) health.OnDied += HandleDied;
+       // if (health != null) health.OnDied += HandleDied;
     }
 
     void OnDestroy()
     {
-        if (health != null) health.OnDied -= HandleDied;
+     //   if (health != null) health.OnDied -= HandleDied;
     }
 
     void HandleDied(Health h)
@@ -34,8 +34,8 @@ public class SporeBurst : MonoBehaviour
         if (playerHealth == null) return;
 
         int damage = Mathf.Max(1, Mathf.RoundToInt(burstDamage * Difficulty.DamageMultiplier));
-        if (playerHealth.TakeDamage(damage) && AudioManager.Instance != null)
-            AudioManager.Instance.PlaySfx(SfxId.Hurt);
+       // if (playerHealth.TakeDamage(damage) && AudioManager.Instance != null)
+         //   AudioManager.Instance.PlaySfx(SfxId.Hurt);
     }
 
     void OnDrawGizmosSelected()

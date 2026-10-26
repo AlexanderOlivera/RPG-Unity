@@ -1,106 +1,53 @@
 using UnityEngine;
-using UnityEngine.UI;
+using System;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
-    public int maxHealth = 30; // Vida inicial (3 corazones)
-    public int absoluteMaxHealth = 50; // LÌmite m·ximo con gemas (5 corazones)
-    private int currentHealth;
+    public bool isPlayer = false;
+    public bool IsAlive = true; 
 
-    [Header("Efectos (Enemigos)")]
-    public GameObject explosionPrefab;
-    public GameObject coinPrefab;
-    public GameObject gemPrefab; // Casilla para la gema
-    [Range(0f, 1f)] public float gemDropChance = 0.15f; // 15% de probabilidad de soltar gema
+    public int CurrentHealth = 100;
+    public int MaxHealth = 100;
+    public int maxHealth = 100;
+    public int ShieldPoints = 0;
 
-    [Header("UI (Solo Jugador)")]
-    public Image[] corazones;
-    public Sprite corazonLleno;
-    public Sprite corazonVacio;
+    public Action OnDied;
+    public Action OnHealthChanged;
 
-    public GameOverManager gestorGameOver;
-
-    void Start()
+    public void TakeDamage(int amount) 
     {
-        currentHealth = maxHealth;
-        ActualizarCorazones();
-    }
+        if (!IsAlive) return;
 
-    public void TakeDamage(int damage)
-    {
-        if (Time.timeScale == 0f) return;
+        CurrentHealth -= amount;
+        Debug.Log(gameObject.name + " recibi√≥ da√±o. Vida restante: " + CurrentHealth);
 
-        currentHealth -= damage;
-        ActualizarCorazones();
-
-        if (currentHealth <= 0)
+        if (CurrentHealth <= 0)
         {
-            Die();
-        }
-    }
-
-    // Nueva funciÛn para sumar vida al recoger la gema
-    public void AgregarVida(int cantidad)
-    {
-        currentHealth += cantidad;
-        if (currentHealth > absoluteMaxHealth)
-        {
-            currentHealth = absoluteMaxHealth; // Evita que pase de 5 corazones
-        }
-        ActualizarCorazones();
-    }
-
-    void ActualizarCorazones()
-    {
-        if (corazones.Length == 0) return;
-        int corazonesLlenos = currentHealth / 10;
-        int corazonesBase = maxHealth / 10; // Siempre son 3 corazones base
-
-        for (int i = 0; i < corazones.Length; i++)
-        {
-            if (i < corazonesLlenos)
+            IsAlive = false;
+            
+            // Si el objeto es el jugador, reinicia la escena
+            if (isPlayer || gameObject.CompareTag("Player"))
             {
-                // Tiene vida: Mostrar el corazÛn lleno
-                corazones[i].gameObject.SetActive(true);
-                corazones[i].sprite = corazonLleno;
+                Debug.Log("El jugador ha muerto. Reiniciando...");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
-            else
+            else 
             {
-                // No tiene vida en este espacio
-                if (i < corazonesBase)
-                {
-                    // Es uno de los 3 corazones iniciales: Mostrar marca vacÌa
-                    corazones[i].gameObject.SetActive(true);
-                    corazones[i].sprite = corazonVacio;
-                }
-                else
-                {
-                    // Son el 4to o 5to corazÛn: Ocultarlos por completo
-                    corazones[i].gameObject.SetActive(false);
-                }
+                // Si es un enemigo, lo destruye
+                Destroy(gameObject);
             }
         }
     }
 
-    void Die()
+    public void TakeDamage(float amount) 
     {
-        if (gameObject.CompareTag("Player"))
-        {
-            if (gestorGameOver != null) gestorGameOver.MostrarGameOver();
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            if (explosionPrefab != null) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            if (coinPrefab != null) Instantiate(coinPrefab, transform.position, Quaternion.identity);
-
-            // Dropeo por probabilidad: Solo suelta la gema si el valor aleatorio es menor o igual al 15%
-            if (gemPrefab != null && Random.value <= gemDropChance)
-            {
-                Instantiate(gemPrefab, transform.position, Quaternion.identity);
-            }
-
-            Destroy(gameObject);
-        }
+        TakeDamage(Mathf.RoundToInt(amount));
     }
+
+    public void Heal(int amount) {}
+    public void AgregarVida(int amount) {}
+    public void AddShield(int amount) {}
+    public void ResetHealth() {}
+    public void SetHealth(int amount) {}
 }

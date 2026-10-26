@@ -11,7 +11,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Configuración del Enemigo")]
     public Transform player;
     public float speed = 2.5f;
-    public float attackRange = 1.1f;
+    public float attackRange = 3f;
     public int attackDamage = 10;
     public float attackCooldown = 1.5f;
 
@@ -67,8 +67,8 @@ public class EnemyAI : MonoBehaviour
 
     void OnDisable()
     {
-        if (subscribed && health != null) health.OnDied -= HandleDeath;
-        subscribed = false;
+  //      if (subscribed && health != null) health.OnDied -= HandleDeath;
+       // subscribed = false;
     }
 
     void FindPlayer()
@@ -103,7 +103,7 @@ public class EnemyAI : MonoBehaviour
     void Subscribe()
     {
         if (subscribed || health == null) return;
-        health.OnDied += HandleDeath;
+ //       health.OnDied += HandleDeath;
         subscribed = true;
     }
 
@@ -208,14 +208,18 @@ public class EnemyAI : MonoBehaviour
         if (spriteRenderer != null && Mathf.Abs(facing.x) > 0.01f) spriteRenderer.flipX = facing.x < 0f;
     }
 
-    void AttackPlayer()
+    
+ void AttackPlayer()
     {
         Health playerHealth = player.GetComponent<Health>();
         if (playerHealth == null) playerHealth = player.GetComponentInParent<Health>();
         if (playerHealth == null) return;
 
-        int damage = Mathf.Max(1, Mathf.RoundToInt(attackDamage * Difficulty.DamageMultiplier));
-        if (playerHealth.TakeDamage(damage) && AudioManager.Instance != null)
+        // Aplica directamente el daño al jugador
+        playerHealth.TakeDamage(attackDamage);
+        
+        // El audio ahora está a salvo dentro de la función
+        if (AudioManager.Instance != null) 
             AudioManager.Instance.PlaySfx(SfxId.Hurt);
     }
 
