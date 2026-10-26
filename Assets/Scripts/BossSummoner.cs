@@ -50,6 +50,7 @@ public class BossSummoner : MonoBehaviour
     int CountAlive()
     {
         if (summonsRoot == null) return 0;
+
         int count = 0;
         for (int i = 0; i < summonsRoot.childCount; i++)
             if (summonsRoot.GetChild(i) != null) count++;
@@ -58,9 +59,9 @@ public class BossSummoner : MonoBehaviour
 
     void Summon()
     {
-        Transform player = FindPlayer();
-        if (player == null) return;
-        if (Vector2.Distance(transform.position, player.position) > engageRange) return;
+        Transform target = FindPlayer();
+        if (target == null) return;
+        if (Vector2.Distance(transform.position, target.position) > engageRange) return;
 
         if (!warned)
         {
@@ -79,7 +80,7 @@ public class BossSummoner : MonoBehaviour
             if (summonsRoot != null) spore.transform.SetParent(summonsRoot, true);
 
             EnemyAI ai = spore.GetComponent<EnemyAI>();
-            if (ai != null) ai.player = player;
+            if (ai != null) ai.player = target;
         }
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlaySfx(SfxId.EnemyDeath);
@@ -87,7 +88,7 @@ public class BossSummoner : MonoBehaviour
 
     Transform FindPlayer()
     {
-        PlayerController player = Object.FindFirstObjectByType<PlayerController>();
-        return player != null ? player.transform : null;
+        PlayerController found = Object.FindFirstObjectByType<PlayerController>();
+        return found != null ? found.transform : null;
     }
 }

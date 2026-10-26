@@ -26,15 +26,16 @@ public class Firefly : MonoBehaviour
     void Update()
     {
         float t = Time.time * speed + phase;
-        Vector3 offset = new Vector3(Mathf.Sin(t * 0.9f) * radius, Mathf.Cos(t * 0.63f + 1.7f) * radius * heightFactor, 0f);
-        transform.position = origin + offset;
 
-        if (sr != null)
-        {
-            float blink = (Mathf.Sin(t * 2.1f) + 1f) * 0.5f;
-            Color c = sr.color;
-            c.a = Mathf.Lerp(minAlpha, maxAlpha, blink);
-            sr.color = c;
-        }
+        transform.position = origin + new Vector3(
+            Mathf.Sin(t * 0.9f) * radius,
+            Mathf.Cos(t * 0.63f + 1.7f) * radius * heightFactor,
+            0f);
+
+        if (sr == null) return;
+        float blink = (Mathf.Sin(t * 2.1f) + 1f) * 0.5f;
+        Color c = sr.color;
+        c.a = Mathf.Lerp(minAlpha, maxAlpha, blink);
+        sr.color = c;
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Arranque automático: crea los gestores persistentes y prepara cada escena
-/// (UI, navegación A* y registros) sin necesidad de cablear nada a mano.
+/// (UI, jugador y registros) sin necesidad de cablear nada a mano.
 /// </summary>
 public static class GameBootstrap
 {
@@ -28,7 +28,6 @@ public static class GameBootstrap
         if (sceneName == GameManager.MainMenuScene) return;
         if (sceneName == GameManager.CreditsScene) return;
 
-        EnemyNavigation.EnsureGrid();
         if (UIRoot.Instance == null) UIRootBuilder.Build();
         if (QuestTracker.Instance == null) new GameObject("~QuestTracker").AddComponent<QuestTracker>();
 

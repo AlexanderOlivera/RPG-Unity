@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
-    "com.ramenvr.aura-unity": "https://github.com/ramenvr/AuraForUnityPlugin.git",
     "com.unity.2d.animation": "13.0.4",
     "com.unity.2d.aseprite": "3.0.1",
     "com.unity.2d.common": "12.0.2",

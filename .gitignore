@@ -37,3 +37,11 @@ Thumbs.db
 
 .plastic/
 ignore.conf
+
+# Carpeta de trabajo temporal del proyecto
+/[Tt]emp_/
+
+# Restos de herramientas de asistencia (no forman parte del juego)
+/.Aura/
+/Assets/.Aura/
+/Packages/Aura/

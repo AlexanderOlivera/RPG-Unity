@@ -1,9 +1,10 @@
 using UnityEngine;
 
 /// <summary>
-/// IA de enemigo: detecta al jugador por radio de agresión, lo persigue con
-/// navegación A* (AgentMover2D), ataca al alcance y vuelve a su zona de
-/// vigilancia si el jugador se aleja demasiado (leash).
+/// Cerebro del enemigo: aguarda en su zona, detecta al jugador por radio de
+/// agresión, lo persigue en línea recta (el motor AgentMover2D rodea las
+/// paredes), ataca al alcance y vuelve a su puesto si el jugador se aleja.
+/// No depende de ninguna rejilla de navegación.
 /// </summary>
 public class EnemyAI : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class EnemyAI : MonoBehaviour
     private Vector2 home;
     private Vector2 facing = Vector2.down;
     private float nextAttackTime;
+    private float nextPlayerSearch;
     private bool aggro;
     private bool subscribed;
     private bool healthScaled;
@@ -52,11 +54,8 @@ public class EnemyAI : MonoBehaviour
             rb.freezeRotation = true;
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         }
-        if (player == null)
-        {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) player = p.transform;
-        }
+
+        FindPlayer();
         ApplyDifficultyScaling();
         Subscribe();
     }
@@ -70,6 +69,23 @@ public class EnemyAI : MonoBehaviour
     {
         if (subscribed && health != null) health.OnDied -= HandleDeath;
         subscribed = false;
+    }
+
+    void FindPlayer()
+    {
+        if (player != null) return;
+
+        PlayerController found = Object.FindFirstObjectByType<PlayerController>();
+        if (found != null)
+        {
+            player = found.transform;
+            return;
+        }
+
+        GameObject tagged = null;
+        try { tagged = GameObject.FindGameObjectWithTag("Player"); }
+        catch (UnityException) { tagged = null; }
+        if (tagged != null) player = tagged.transform;
     }
 
     void ApplyDifficultyScaling()
@@ -101,8 +117,24 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.IsPaused || UIRoot.DialogueOpen) return;
-        if (player == null || health == null || !health.IsAlive) return;
+        if (GameManager.IsPaused || UIRoot.DialogueOpen)
+        {
+            if (mover != null) mover.Stop();
+            UpdateAnimator(false);
+            return;
+        }
+
+        if (health == null || !health.IsAlive) return;
+
+        // Búsqueda perezosa del jugador: si aparece en la escena más tarde
+        // (o se reconstruye al reiniciar), el enemigo lo vuelve a encontrar.
+        if (player == null)
+        {
+            if (Time.time < nextPlayerSearch) return;
+            nextPlayerSearch = Time.time + 0.5f;
+            FindPlayer();
+            if (player == null) return;
+        }
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         float distanceToHome = Vector2.Distance(transform.position, home);
@@ -114,12 +146,12 @@ public class EnemyAI : MonoBehaviour
         {
             if (distanceToPlayer > attackRange)
             {
-                if (mover != null) mover.MoveTo(player.position, speed);
+                MoveToward(player.position, speed);
                 UpdateAnimator(true);
             }
             else
             {
-                if (mover != null) mover.Stop();
+                MoveToward(Vector2.zero, 0f);
                 UpdateAnimator(false);
                 if (Time.time >= nextAttackTime)
                 {
@@ -127,25 +159,44 @@ public class EnemyAI : MonoBehaviour
                     AttackPlayer();
                 }
             }
+            return;
+        }
+
+        if (distanceToHome > homeRadius)
+        {
+            MoveToward(home, speed * 0.7f);
+            UpdateAnimator(true);
         }
         else
         {
-            if (distanceToHome > homeRadius)
-            {
-                if (mover != null) mover.MoveTo(home, speed * 0.7f);
-                UpdateAnimator(true);
-            }
-            else
-            {
-                if (mover != null) mover.Stop();
-                UpdateAnimator(false);
-            }
+            MoveToward(Vector2.zero, 0f);
+            UpdateAnimator(false);
         }
+    }
+
+    /// <summary>Delega el desplazamiento en AgentMover2D o empuja el cuerpo directamente.</summary>
+    void MoveToward(Vector2 target, float moveSpeed)
+    {
+        if (moveSpeed <= 0f)
+        {
+            if (mover != null) mover.Stop();
+            return;
+        }
+
+        if (mover != null)
+        {
+            mover.MoveTo(target, moveSpeed);
+            return;
+        }
+
+        if (rb == null) return;
+        rb.MovePosition(Vector2.MoveTowards(rb.position, target, moveSpeed * Time.fixedDeltaTime));
     }
 
     void UpdateAnimator(bool moving)
     {
         if (animator == null) return;
+
         Vector2 dir = player != null ? ((Vector2)player.position - (Vector2)transform.position).normalized : facing;
         if (dir.sqrMagnitude > 0.001f)
         {

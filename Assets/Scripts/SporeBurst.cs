@@ -28,7 +28,6 @@ public class SporeBurst : MonoBehaviour
     {
         PlayerController player = Object.FindFirstObjectByType<PlayerController>();
         if (player == null) return;
-
         if (Vector2.Distance(transform.position, player.transform.position) > burstRadius) return;
 
         Health playerHealth = player.GetComponent<Health>();
