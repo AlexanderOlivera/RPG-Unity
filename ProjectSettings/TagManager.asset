@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Obstacle
   layers:
   - Default
   - TransparentFX
@@ -59,11 +60,11 @@ TagManager:
   - name: objetos
     uniqueID: 2497919611
     locked: 0
-  - name: player
-    uniqueID: 3220583483
-    locked: 0
   - name: enemy
     uniqueID: 64049279
+    locked: 0
+  - name: player
+    uniqueID: 3220583483
     locked: 0
   - name: npc
     uniqueID: 1626073141

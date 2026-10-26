@@ -1,0 +1,11 @@
+2026-10-25 17:57:30.428 -06:00 [INF] Initializing Aura services
+2026-10-25 17:57:30.471 -06:00 [INF] Wrote MCP registration file: C:\Users\josue\AppData\Local\AuraForUnity\UnityProjects\e002bc78a37bf451.json
+2026-10-25 17:57:30.476 -06:00 [INF] Initializing EditorThreadHelper
+2026-10-25 17:57:30.476 -06:00 [INF] EditorThreadHelper initialized successfully
+2026-10-25 17:57:30.516 -06:00 [INF] TCP transport listening on port 65514
+2026-10-25 17:57:30.517 -06:00 [INF] Wrote MCP registration file: C:\Users\josue\AppData\Local\AuraForUnity\UnityProjects\e002bc78a37bf451.json
+2026-10-25 17:57:30.517 -06:00 [INF] RunInBackgroundStartupTask initialized - will enable background execution in play mode
+2026-10-25 18:00:30.740 -06:00 [DBG] Stored original runInBackground value: True
+2026-10-25 18:00:30.746 -06:00 [DBG] Restored Application.runInBackground to original value: True
+2026-10-25 18:00:40.757 -06:00 [DBG] Stored original runInBackground value: True
+2026-10-25 18:04:43.862 -06:00 [DBG] Stored original runInBackground value: True

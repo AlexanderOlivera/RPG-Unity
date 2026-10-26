@@ -1,135 +1,106 @@
-using System;
 using UnityEngine;
+using UnityEngine.UI;
 
-/// <summary>
-/// Vida compartida por jugador, enemigos y jefe.
-/// El jugador NO se destruye al morir (destroyOnDeath = false) para que el
-/// GameManager pueda mostrar la pantalla de derrota y reiniciar la escena.
-/// </summary>
 public class Health : MonoBehaviour
 {
-    public int maxHealth = 30;
+    public int maxHealth = 30; // Vida inicial (3 corazones)
+    public int absoluteMaxHealth = 50; // LÌmite m·ximo con gemas (5 corazones)
+    private int currentHealth;
 
-    [Tooltip("Si es false, el objeto no se destruye al morir (jugador).")]
-    public bool destroyOnDeath = true;
+    [Header("Efectos (Enemigos)")]
+    public GameObject explosionPrefab;
+    public GameObject coinPrefab;
+    public GameObject gemPrefab; // Casilla para la gema
+    [Range(0f, 1f)] public float gemDropChance = 0.15f; // 15% de probabilidad de soltar gema
 
-    [Tooltip("Marcar solo en el jugador: activa la persistencia entre escenarios.")]
-    public bool isPlayer = false;
+    [Header("UI (Solo Jugador)")]
+    public Image[] corazones;
+    public Sprite corazonLleno;
+    public Sprite corazonVacio;
 
-    [Tooltip("Tiempo de invulnerabilidad tras recibir un golpe (segundos).")]
-    public float invulnerabilityTime = 0.35f;
-
-    [Tooltip("Puntos de escudo absorbente comprados en la aldea (se gastan antes que la vida).")]
-    public int shieldPoints = 0;
-
-    public event Action<Health> OnHealthChanged;
-    public event Action<Health> OnDamaged;
-    public event Action<Health> OnDied;
-
-    public int CurrentHealth { get; private set; }
-    public int MaxHealth { get { return Mathf.Max(1, maxHealth); } }
-    public bool IsAlive { get { return CurrentHealth > 0; } }
-    public int ShieldPoints { get { return shieldPoints; } }
-
-    private float lastHitTime = -999f;
-    private float invulnerableUntil = -999f;
-    private bool dead;
-
-    void Awake()
-    {
-        if (CurrentHealth <= 0) CurrentHealth = MaxHealth;
-    }
+    public GameOverManager gestorGameOver;
 
     void Start()
     {
-        if (CurrentHealth <= 0) CurrentHealth = MaxHealth;
-        OnHealthChanged?.Invoke(this);
+        currentHealth = maxHealth;
+        ActualizarCorazones();
     }
 
-    public void SetHealth(int value, bool notify = true)
+    public void TakeDamage(int damage)
     {
-        CurrentHealth = Mathf.Clamp(value, 0, MaxHealth);
-        dead = CurrentHealth <= 0;
-        if (notify) OnHealthChanged?.Invoke(this);
-    }
+        if (Time.timeScale == 0f) return;
 
-    public void ResetHealth()
-    {
-        dead = false;
-        CurrentHealth = MaxHealth;
-        lastHitTime = -999f;
-        invulnerableUntil = -999f;
-        OnHealthChanged?.Invoke(this);
-    }
+        currentHealth -= damage;
+        ActualizarCorazones();
 
-    /// <summary>Escudo absorbente: se consume antes que la vida.</summary>
-    public void AddShield(int amount)
-    {
-        if (amount <= 0) return;
-        shieldPoints += amount;
-        OnHealthChanged?.Invoke(this);
-    }
-
-    /// <summary>Invulnerabilidad concedida por una habilidad (esquiva).</summary>
-    public void GrantInvulnerability(float seconds)
-    {
-        if (seconds <= 0f) return;
-        invulnerableUntil = Mathf.Max(invulnerableUntil, Time.time + seconds);
-    }
-
-    /// <summary>Devuelve true si el da√±o se aplic√≥ realmente.</summary>
-    public bool TakeDamage(int damage)
-    {
-        if (damage <= 0 || dead || !IsAlive) return false;
-        if (Time.time < invulnerableUntil) return false;
-        if (invulnerabilityTime > 0f && Time.time - lastHitTime < invulnerabilityTime) return false;
-
-        lastHitTime = Time.time;
-
-        if (shieldPoints > 0)
+        if (currentHealth <= 0)
         {
-            int absorbed = Mathf.Min(shieldPoints, damage);
-            shieldPoints -= absorbed;
-            damage -= absorbed;
-            OnHealthChanged?.Invoke(this);
-            if (damage <= 0) return true;
+            Die();
         }
-
-        CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
-        OnDamaged?.Invoke(this);
-        OnHealthChanged?.Invoke(this);
-
-        if (CurrentHealth <= 0) Die();
-        return true;
     }
 
-    public void Heal(int amount)
+    // Nueva funciÛn para sumar vida al recoger la gema
+    public void AgregarVida(int cantidad)
     {
-        if (amount <= 0 || dead) return;
-        CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
-        OnHealthChanged?.Invoke(this);
+        currentHealth += cantidad;
+        if (currentHealth > absoluteMaxHealth)
+        {
+            currentHealth = absoluteMaxHealth; // Evita que pase de 5 corazones
+        }
+        ActualizarCorazones();
+    }
+
+    void ActualizarCorazones()
+    {
+        if (corazones.Length == 0) return;
+        int corazonesLlenos = currentHealth / 10;
+        int corazonesBase = maxHealth / 10; // Siempre son 3 corazones base
+
+        for (int i = 0; i < corazones.Length; i++)
+        {
+            if (i < corazonesLlenos)
+            {
+                // Tiene vida: Mostrar el corazÛn lleno
+                corazones[i].gameObject.SetActive(true);
+                corazones[i].sprite = corazonLleno;
+            }
+            else
+            {
+                // No tiene vida en este espacio
+                if (i < corazonesBase)
+                {
+                    // Es uno de los 3 corazones iniciales: Mostrar marca vacÌa
+                    corazones[i].gameObject.SetActive(true);
+                    corazones[i].sprite = corazonVacio;
+                }
+                else
+                {
+                    // Son el 4to o 5to corazÛn: Ocultarlos por completo
+                    corazones[i].gameObject.SetActive(false);
+                }
+            }
+        }
     }
 
     void Die()
     {
-        if (dead) return;
-
-        // La vida extra comprada a un aldeano reanima al jugador en el sitio: no se
-        // dispara OnDied, as√≠ que la pantalla de derrota nunca llega a abrirse.
-        if (isPlayer && PlayerBuffs.ConsumeExtraLife())
+        if (gameObject.CompareTag("Player"))
         {
-            CurrentHealth = Mathf.Max(1, Mathf.RoundToInt(MaxHealth * 0.6f));
-            lastHitTime = Time.time;
-            invulnerableUntil = Time.time + 2f;
-            OnHealthChanged?.Invoke(this);
-            if (AudioManager.Instance != null) AudioManager.Instance.PlaySfx(SfxId.Item);
-            if (UIRoot.Instance != null)
-                UIRoot.Instance.Toast("El sello te sostiene ¬∑ vidas extra restantes: " + PlayerBuffs.ExtraLives);
-            return;
+            if (gestorGameOver != null) gestorGameOver.MostrarGameOver();
+            gameObject.SetActive(false);
         }
+        else
+        {
+            if (explosionPrefab != null) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            if (coinPrefab != null) Instantiate(coinPrefab, transform.position, Quaternion.identity);
 
-        dead = true;
-        OnDied?.Invoke(this);
-        if (destroyOnDeath) Destroy(gameObject, 0.05f);
+            // Dropeo por probabilidad: Solo suelta la gema si el valor aleatorio es menor o igual al 15%
+            if (gemPrefab != null && Random.value <= gemDropChance)
+            {
+                Instantiate(gemPrefab, transform.position, Quaternion.identity);
+            }
+
+            Destroy(gameObject);
+        }
     }
 }
