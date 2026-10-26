@@ -45,3 +45,7 @@ ignore.conf
 /.Aura/
 /Assets/.Aura/
 /Packages/Aura/
+
+*.csproj
+*.slnx
+/.vs/
