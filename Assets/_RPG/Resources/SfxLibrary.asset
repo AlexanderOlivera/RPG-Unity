@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78846adf408653f4dba0733eae85cc87, type: 3}
+  m_Name: SfxLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::SfxLibrary
+  slash: {fileID: 8300000, guid: 07efdd6394b783548b6d2a3750426a66, type: 3}
+  hurt: {fileID: 8300000, guid: 4e9cc4804060bdc4a8a7b12f11f1677b, type: 3}
+  item: {fileID: 8300000, guid: 776fc501463f41b409aa7c1888086e84, type: 3}
+  enemyDeath: {fileID: 8300000, guid: 7a75597a9b4d35a4aad5abc84c5dd5b3, type: 3}
+  music: {fileID: 8300000, guid: 0889c90f97634b04faeeb08664d7b7a6, type: 3}
